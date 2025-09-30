@@ -1,5 +1,5 @@
 import { Controller, Logger } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from '../../application/services/user.service';
 import { CreateUserCommand } from '../../application/commands/create-user.command';
 import { UpdateUserCommand } from '../../application/commands/update-user.command';
@@ -11,33 +11,35 @@ export class UsersMessageController {
 
   constructor(private readonly userService: UserService) {}
 
-  @MessagePattern({ cmd: 'create_user' })
-  async create(command: CreateUserCommand) {
-    this.logger.log('Received create_user', JSON.stringify(command));
-    return this.userService.create(command);
+  @MessagePattern('create_user')
+  async create(@Payload() message: { value: CreateUserCommand }) {
+    this.logger.log(`Received create_user: ${JSON.stringify(message.value)}`);
+    return this.userService.create(message.value);
   }
 
-  @MessagePattern({ cmd: 'find_all_users' })
+  @MessagePattern('find_all_users')
   async findAll() {
     this.logger.log('Received find_all_users');
     return this.userService.getAll();
   }
 
-  @MessagePattern({ cmd: 'find_user_by_id' })
-  async findOne(data: { id: string }) {
-    this.logger.log('Received find_user_by_id', JSON.stringify(data));
-    return this.userService.getById(data.id);
+  @MessagePattern('find_user_by_id')
+  async findOne(@Payload() message: { value: { id: string } }) {
+    this.logger.log(
+      `Received find_user_by_id: ${JSON.stringify(message.value)}`,
+    );
+    return this.userService.getById(message.value.id);
   }
 
-  @MessagePattern({ cmd: 'update_user' })
-  async update(command: UpdateUserCommand) {
-    this.logger.log('Received update_user', JSON.stringify(command));
-    return this.userService.update(command);
+  @MessagePattern('update_user')
+  async update(@Payload() message: { value: UpdateUserCommand }) {
+    this.logger.log(`Received update_user: ${JSON.stringify(message.value)}`);
+    return this.userService.update(message.value);
   }
 
-  @MessagePattern({ cmd: 'delete_user' })
-  async remove(command: DeleteUserCommand) {
-    this.logger.log('Received delete_user', JSON.stringify(command));
-    return this.userService.delete(command);
+  @MessagePattern('delete_user')
+  async remove(@Payload() message: { value: DeleteUserCommand }) {
+    this.logger.log(`Received delete_user: ${JSON.stringify(message.value)}`);
+    return this.userService.delete(message.value);
   }
 }
