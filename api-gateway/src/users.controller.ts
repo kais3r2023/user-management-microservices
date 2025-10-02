@@ -25,32 +25,32 @@ export class UsersController {
   }
 
   @Post()
-  async create(@Body() createUserDto: any) {
+  create(@Body() createUserDto: any) {
     // Envía el mensaje al topic 'create_user'
-    return this.client.emit('create_user', createUserDto);
+    return this.client.send('create_user', createUserDto);
   }
 
   @Get()
-  async findAll() {
+  findAll() {
     // Envía el mensaje al topic 'find_all_users'
     return this.client.send('find_all_users', {});
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string) {
     // Envía el mensaje al topic 'find_user_by_id'
     return this.client.send('find_user_by_id', { id });
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: any) {
+  update(@Param('id') id: string, @Body() updateUserDto: any) {
     // Envía el mensaje al topic 'update_user'
-    return this.client.emit('update_user', { id, ...updateUserDto });
+    return this.client.send('update_user', { id, ...updateUserDto });
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  remove(@Param('id') id: string) {
     // Envía el mensaje al topic 'delete_user'
-    return this.client.emit('delete_user', { id });
+    return this.client.send('delete_user', { id });
   }
 }
