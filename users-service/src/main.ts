@@ -6,8 +6,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
   const kafkaClientId = process.env.KAFKA_CLIENT_ID ?? '';
   const kafkaBroker = process.env.KAFKA_BROKER ?? '';
   const kafkaGroupId = process.env.KAFKA_GROUP_ID ?? '';
@@ -18,20 +16,24 @@ async function bootstrap() {
     );
   }
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: kafkaClientId,
-        brokers: [kafkaBroker],
-      },
-      consumer: {
-        groupId: 'users-service-consumer',
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          clientId: kafkaClientId,
+          brokers: [kafkaBroker],
+        },
+        consumer: {
+          groupId: kafkaGroupId,
+        },
       },
     },
-  });
+  );
 
-  await app.startAllMicroservices();
-  await app.listen(3000);
+  await app.listen();
+  console.log('🚀 Users Service is running');
 }
+
 bootstrap();
