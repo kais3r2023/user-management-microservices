@@ -1,20 +1,12 @@
-import { Image } from "expo-image";
-import { Platform, StyleSheet } from "react-native";
-
-import { HelloWave } from "@/components/hello-wave";
-import ParallaxScrollView from "@/components/parallax-scroll-view";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { Link } from "expo-router";
 
 import React, { useEffect, useState } from "react";
 import {
-  SafeAreaView,
   Text,
   TextInput,
   Button,
   FlatList,
-  View,
+  View, 
+  StyleSheet,
 } from "react-native";
 import {
   getUsers,
@@ -22,12 +14,13 @@ import {
   updateUser,
   deleteUser,
 } from "@/src/api/usersApi";
+import { User } from "@/constants/types/user.types";
 
 export default function HomeScreen() {
-  const [users, setUsers] = useState<any[]>([]);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [editingId, setEditingId] = useState<string | null>(null);
 
   // Cargar usuarios al inicio
@@ -53,7 +46,7 @@ export default function HomeScreen() {
     fetchUsers();
   };
 
-  const handleEdit = (user: any) => {
+  const handleEdit = (user: User) => {
     setEditingId(user.id);
     setName(user.name);
     setEmail(user.email);
@@ -66,8 +59,9 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 22, fontWeight: "bold" }}>CRUD Usuarios</Text>
+    <View style={{ flex: 1, padding: 40}}>
+      
+          <Text style={{ fontSize: 22, fontWeight: "bold", textAlign: "center"}}>CRUD Usuarios</Text>
 
       {/* Formulario */}
       <TextInput
@@ -120,7 +114,8 @@ export default function HomeScreen() {
           </View>
         )}
       />
-    </SafeAreaView>
+      
+    </View>
   );
 }
 
